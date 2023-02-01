@@ -38,6 +38,7 @@
             };
 
             var previousToast;
+            var previousToastId;
 
             return toastr;
 
@@ -188,6 +189,7 @@
                     closeClass: 'toast-close-button',
                     newestOnTop: true,
                     preventDuplicates: false,
+                    preventDuplicatesById: false,
                     progressBar: false,
                     progressClass: 'toast-progress',
                     rtl: false
@@ -391,7 +393,21 @@
                 }
 
                 function shouldExit(options, map) {
-                    if (options.preventDuplicates) {
+                    var messageId;
+
+                    if (typeof (map.optionsOverride) !== 'undefined') {
+                        if (typeof map.optionsOverride.messageId !== 'undefined') {
+                            messageId = map.optionsOverride.messageId;
+                        }
+                    }
+
+                    if (options.preventDuplicatesById) {
+                        if (messageId === previousToastId) {
+                            return true;
+                        } else {
+                            previousToastId = messageId;
+                        }
+                    } else if (options.preventDuplicates) {
                         if (map.message === previousToast) {
                             return true;
                         } else {
